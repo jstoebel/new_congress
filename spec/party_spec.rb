@@ -24,10 +24,16 @@ describe Party do
   end
 
   describe 'award' do
-    it 'increments seats_won by one' do
+    it 'increments seats_won by 1 by default' do
       party = Party.new 'X', 100
       party.award
       expect(party.seats_won).to eq(1)
+    end
+
+    it 'increments seats won by n based on argument' do
+      party = Party.new 'X', 100
+      party.award(2)
+      expect(party.seats_won).to eq(2)
     end
   end
 

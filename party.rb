@@ -10,7 +10,7 @@ class Party
     @votes / (seats_won + 1)
   end
 
-  def award
-    @seats_won += 1
+  def award(n = 1)
+    @seats_won += n
   end
 end
