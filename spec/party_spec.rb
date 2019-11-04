@@ -37,6 +37,28 @@ describe Party do
     end
   end
 
+  describe '#null_opposing_major' do
+    it 'creates a party instance with zero votes' do
+      party = Party.new('D', 100)
+
+      opposing_major = party.null_opposing_major
+
+      expect(opposing_major.id).to eq('R')
+      expect(opposing_major.instance_variable_get(:@votes)).to eq(0)
+    end
+  end
+
+  describe '#null_coalition_minor' do
+    it 'creates a party instance with zero votes' do
+      party = Party.new('D', 100)
+
+      opposing_major = party.null_coalition_minor
+
+      expect(opposing_major.id).to eq('G')
+      expect(opposing_major.instance_variable_get(:@votes)).to eq(0)
+    end
+  end
+
   def stub_seats_won(party, seats)
     allow(party).to receive(:seats_won).and_return(seats)
   end

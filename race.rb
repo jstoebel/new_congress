@@ -4,8 +4,7 @@ class Race
 
   REPS_PER_DISTRICT = 5
 
-  # maps the two major parties to the third party counterparts
-  MAJOR_TO_MINOR = { 'D' => 'G', 'R' => 'L' }
+
   # attr_reader @raceid
   # raceid (string) the id representing the congresional district. Example: ALH01
   # parties (array of hashes representing the performance of
@@ -47,14 +46,12 @@ class Race
     sole_party = @parties.first
     sole_party.award(3)
 
-    # one seat to other major party
-    other_major_id =( MAJOR_TO_MINOR.keys - [sole_party.id]).first
-    other_major = Party.new( other_major_id, 0 )
+    other_major = sole_party.null_opposing_major
     other_major.award(1)
     @parties << other_major
 
     # one seat to third party
-    third_party = Party.new( MAJOR_TO_MINOR[sole_party.id], 0 )
+    third_party = sole_party.null_coalition_minor
     third_party.award(1)
     @parties << third_party
   end
