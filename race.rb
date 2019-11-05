@@ -4,7 +4,7 @@ class Race
 
   REPS_PER_DISTRICT = 5
 
-  # attr_reader @raceid
+  attr_reader :race_id
   # raceid (string) the id representing the congresional district. Example: ALH01
   # parties (array of hashes representing the performance of
   # each party). Fields are:
