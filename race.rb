@@ -27,6 +27,7 @@ class Race
           .sort_by(&:effective_votes) # sort by effective votes
           .last.award # inform the winner
       end
+      tweak_results!
     end
   end
 
@@ -39,20 +40,54 @@ class Race
 
   private
 
-  # how to handle a completly uncontested race
+  # A safe district (so safe it was unopposed in 2018)
+  # would become competative in multi member system. A third party in same coalition as the dominant party
+  # would likely be able to pick up a seat here
+  # as woul the other major party.
   def handle_completly_uncontested!
 
     # sole party get three seats
     sole_party = @parties.first
     sole_party.award(3)
 
+    # TODO: fix this demeter violation
     other_major = sole_party.null_opposing_major
     other_major.award(1)
     @parties << other_major
 
     # one seat to third party
+    # TODO: fix this demeter violation
     third_party = sole_party.null_coalition_minor
     third_party.award(1)
     @parties << third_party
+  end
+
+  # tweak data to account for various corner cases
+  def tweak_results!
+    # if the race is between a major party and opposing minor party
+    # (D v L or R v G), and the end results are 4/1, the absent major party gets
+    # 1 seat subracted from the other major party
+
+    # this is a standard R v D race
+    return if includes_r_and_d?
+
+    return unless @parties.min_by(&:seats_won).seats_won < 2
+
+    # this race involves a major v minor party but the minor party took just 1 seat.
+    # the major party would have run in a multi member district and been able to pick up 1 seat.
+    major_party = @parties.max_by(&:seats_won)
+    major_party.award(-1)
+
+    # TODO: fix this demeter violation
+    other_major = major_party.null_opposing_major
+    other_major.award 1
+
+    @parties << other_major
+  end
+
+  # is one major party missing from the race?
+  def includes_r_and_d?
+    party_ids = @parties.map(&:id)
+    party_ids.include?('D') && party_ids.include?('R')
   end
 end

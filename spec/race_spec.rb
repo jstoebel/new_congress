@@ -37,17 +37,29 @@ describe Race do
 
           race.run
 
-          expect(race.results).to eq('D' => 3, 'R' => 1, 'G' => 1)
+          expect(race.results).to eq('D' => 3, 'R' => 1, 'GR' => 1)
       end
     end
 
     context 'uncontested by other major party' do
-      it 'other major party wins one seat if third party does not win two'
+      it 'awards one seat to other major party if third party does not win two' do
+
+        # by votes alone L should get 1 seat
+        race = Race.new('some district',
+          [
+            { 'party' => 'D', 'votes' => 80 },
+            { 'party' => 'LB', 'votes' => 20}
+          ])
+
+        race.run
+
+        expect(race.results).to eq('D' => 3, 'LB' => 1, 'R' => 1)
+      end
     end
   end
 
   describe 'adjusting for third parties' do
-    it 'doubles vote count for third parties and subtracts 50% from centrist party'
+    it 'doubles vote count for third parties and subtracts 50% from coalition major party'
   end
 
 end

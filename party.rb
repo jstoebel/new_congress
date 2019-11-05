@@ -1,7 +1,7 @@
 class Party
 
   # maps the two major parties to the third party counterparts
-  MAJOR_TO_MINOR = { 'D' => 'G', 'R' => 'L' }
+  MAJOR_TO_MINOR = { 'D' => 'GR', 'R' => 'LB' }
 
   attr_reader :id, :seats_won
   def initialize(id, votes)

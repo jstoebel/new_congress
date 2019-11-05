@@ -54,7 +54,7 @@ describe Party do
 
       opposing_major = party.null_coalition_minor
 
-      expect(opposing_major.id).to eq('G')
+      expect(opposing_major.id).to eq('GR')
       expect(opposing_major.instance_variable_get(:@votes)).to eq(0)
     end
   end
