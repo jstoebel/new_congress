@@ -59,6 +59,61 @@ describe Party do
     end
   end
 
+  describe 'third_party?' do
+    it 'returns false for D' do
+      d = Party.new('D', 100)
+
+      expect(d.third_party?).to be_falsy
+    end
+
+    it 'returns false for R' do
+      r = Party.new('R', 100)
+
+      expect(r.third_party?).to be_falsy
+
+    end
+
+    it 'returns true for all others' do
+      other = Party.new('other', 100)
+
+      expect(other.third_party?).to be_truthy
+
+    end
+  end
+
+  describe 'natural_leader_id' do
+    it 'returns D for green' do
+      # this would be R or D
+      green = Party.new('GR', 10)
+      expect(green.natural_leader_id).to eq('D')
+    end
+
+    it 'returns R for Libertarian' do
+      libertarian = Party.new('LB', 10)
+      expect(libertarian.natural_leader_id).to eq('R')
+    end
+
+    it 'returns R for Conservative' do
+      libertarian = Party.new('C', 10)
+      expect(libertarian.natural_leader_id).to eq('R')
+    end
+  end
+
+  describe 'steal' do
+    before(:each) do
+      @green = Party.new('GR', 10)
+      @dem = Party.new('D', 90)
+      @green.steal(1.0, @dem)
+    end
+    it 'adds n% of votes from party' do
+      expect(@green.instance_variable_get(:@votes)).to eq(20)
+    end
+
+    it 'deducts n% of notes from other party' do
+      expect(@dem.instance_variable_get(:@votes)).to eq(80)
+    end
+  end
+
   def stub_seats_won(party, seats)
     allow(party).to receive(:seats_won).and_return(seats)
   end

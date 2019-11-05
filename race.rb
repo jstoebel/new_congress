@@ -4,7 +4,6 @@ class Race
 
   REPS_PER_DISTRICT = 5
 
-
   # attr_reader @raceid
   # raceid (string) the id representing the congresional district. Example: ALH01
   # parties (array of hashes representing the performance of
@@ -22,6 +21,7 @@ class Race
     if @parties.one?
       handle_completly_uncontested!
     else
+      adjust_for_third_parties!
       REPS_PER_DISTRICT.times do
         @parties
           .sort_by(&:effective_votes) # sort by effective votes
@@ -89,5 +89,22 @@ class Race
   def includes_r_and_d?
     party_ids = @parties.map(&:id)
     party_ids.include?('D') && party_ids.include?('R')
+  end
+
+  # third parties get their vote counts doubled subtracted from their coalition partner.
+  # if third party does not have a coalition partner, subtract from top vote getter.
+  def adjust_for_third_parties!
+    third_parties = @parties.select(&:third_party?)
+    third_parties.each do |third_party|
+      third_party.steal(1.0, coalition_leader(third_party))
+    end
+  end
+
+  # returns the coalition leader for a party
+  # parties with a natural leader (GR -> D, LB -> R) return those if they are in the race
+  # in all other instances return the top vote getter
+  def coalition_leader(party)
+    natural_leader = @parties.find {|p| p.id == party.natural_leader_id }
+    natural_leader || @parties.max_by(&:seats_won)
   end
 end

@@ -47,8 +47,8 @@ describe Race do
         # by votes alone L should get 1 seat
         race = Race.new('some district',
           [
-            { 'party' => 'D', 'votes' => 80 },
-            { 'party' => 'LB', 'votes' => 20}
+            { 'party' => 'D', 'votes' => 90 },
+            { 'party' => 'LB', 'votes' => 10 } # naturaly earns one seat
           ])
 
         race.run
@@ -59,7 +59,17 @@ describe Race do
   end
 
   describe 'adjusting for third parties' do
-    it 'doubles vote count for third parties and subtracts 50% from coalition major party'
+    it 'doubles vote count for third parties and subtracts 50% from coalition major party' do
+      race = Race.new('some district',
+        [
+          { 'party' => 'D', 'votes' => 100 }, # should adjust to 80
+          { 'party' => 'R', 'votes' => 80 },
+          { 'party' => 'GR', 'votes' => 20} # should adjust to 40
+        ])
+      race.run
+
+      expect(race.results).to eq('GR' => 1, 'D' => 2, 'R' => 2)
+    end
   end
 
 end
