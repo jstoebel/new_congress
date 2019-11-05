@@ -13,7 +13,7 @@ class Party
   end
 
   def effective_votes
-    @votes / (seats_won + 1)
+    (@votes / (seats_won + 1)).to_i
   end
 
   def award(n = 1)
